@@ -28,9 +28,7 @@ const MAX_BALL_VISIBLE = 7;
 const ITEM_HEIGHT = parseInt(windowWidth / MAX_BALL_VISIBLE);
 
 // Duration for 1 step
-const MAX_ANIMATION_DURATION = 500;
-
-const BALL_3TH_VISIBLE_POS = ITEM_HEIGHT * 2;
+const MAX_ANIMATION_DURATION = 100;
 
 const BallPositions = {
   POS_1: -ITEM_HEIGHT,
@@ -122,6 +120,9 @@ export default class App extends Component {
     this.boldTextAnimations = createArray();
     // Ref Text
     this.ballRefs = createArray();
+
+    this.ballLeftIndex = 0;
+    this.ballRightIndex = 0;
   }
 
   setUpBallAnimationConfig = index => {
@@ -171,6 +172,9 @@ export default class App extends Component {
     const animations = [];
     let toXValue = currentPos + ITEM_HEIGHT;
 
+    if (currentPos === BallPositions.POS_1) {
+      this.ballLeftIndex = index;
+    }
     if (currentPos === BallPositions.POS_4) {
       animations.push(
         Animated.timing(this.boldTextAnimationValues[index], {
@@ -195,6 +199,7 @@ export default class App extends Component {
         x: BallPositions.POS_1 - ITEM_HEIGHT,
         y: 0
       });
+      this.ballRightIndex = index;
     }
     animations.push(
       Animated.timing(this.posAnimatedXYValues[index], {
@@ -211,7 +216,9 @@ export default class App extends Component {
     const currentPos = this.posXYList[index].x;
     const animations = [];
     let toXValue = currentPos - ITEM_HEIGHT;
-
+    if (currentPos === BallPositions.POS_9) {
+      this.ballRightIndex = index;
+    }
     if (currentPos === BallPositions.POS_6) {
       animations.push(
         Animated.timing(this.boldTextAnimationValues[index], {
@@ -236,6 +243,7 @@ export default class App extends Component {
         x: BallPositions.POS_9,
         y: 0
       });
+      this.ballLeftIndex = index
     }
 
     animations.push(
@@ -262,7 +270,13 @@ export default class App extends Component {
       stopTogether: true,
       useNativeDriver: true
     });
-    this.currentAnimation.start(callback => this._slideToRight());
+    this.currentAnimation.start(callback => {
+      const ballLeft = this.ballRefs[this.ballLeftIndex];
+      const ballRight = this.ballRefs[this.ballRightIndex];
+      const prevValue = getPreviousNumber(ballLeft.getValue());
+      ballRight.setValue(prevValue);
+      this._slideToRight();
+    });
   };
 
   _slideToLeft = () => {
@@ -278,7 +292,13 @@ export default class App extends Component {
       stopTogether: true,
       useNativeDriver: true
     });
-    this.currentAnimation.start(() => this._slideToLeft());
+    this.currentAnimation.start(() => {
+      const ballLeft = this.ballRefs[this.ballLeftIndex];
+      const ballRight = this.ballRefs[this.ballRightIndex];
+      const nextValue = getNextNumber(ballRight.getValue());
+      ballLeft.setValue(nextValue);
+      this._slideToLeft()
+    });
   };
 
   _renderBalls = () => {
