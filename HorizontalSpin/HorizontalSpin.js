@@ -31,11 +31,13 @@ import {
   getNextNumber,
   BallScrollState
 } from "./Config";
+import GestureRecognizer from "./GestureRecognizer";
 import BallItemLayout from "./BallItemLayout";
 
 export default class HorizontalSpin extends Component {
   constructor(props) {
     super(props);
+    this.animationDuration = 100;
     // List panresponder
     this.panResponders = createArray();
     // List Animated XY
@@ -113,7 +115,7 @@ export default class HorizontalSpin extends Component {
     if (currentPos === BallPositions.POS_4) {
       animations.push(
         Animated.timing(this.boldTextAnimationValues[index], {
-          duration: MAX_ANIMATION_DURATION,
+          duration: this.animationDuration,
           toValue: 1,
           useNativeDriver: true
         })
@@ -121,7 +123,7 @@ export default class HorizontalSpin extends Component {
     } else {
       animations.push(
         Animated.timing(this.boldTextAnimationValues[index], {
-          duration: MAX_ANIMATION_DURATION,
+          duration: this.animationDuration,
           toValue: 0,
           useNativeDriver: true
         })
@@ -139,7 +141,7 @@ export default class HorizontalSpin extends Component {
     animations.push(
       Animated.timing(this.posAnimatedXYValues[index], {
         toValue: { x: toXValue, y: 0 },
-        duration: MAX_ANIMATION_DURATION,
+        duration: this.animationDuration,
         useNativeDriver: true
       })
     );
@@ -157,7 +159,7 @@ export default class HorizontalSpin extends Component {
     if (currentPos === BallPositions.POS_6) {
       animations.push(
         Animated.timing(this.boldTextAnimationValues[index], {
-          duration: MAX_ANIMATION_DURATION,
+          duration: this.animationDuration,
           toValue: 1,
           useNativeDriver: true
         })
@@ -165,7 +167,7 @@ export default class HorizontalSpin extends Component {
     } else {
       animations.push(
         Animated.timing(this.boldTextAnimationValues[index], {
-          duration: MAX_ANIMATION_DURATION,
+          duration: this.animationDuration,
           toValue: 0,
           useNativeDriver: true
         })
@@ -184,7 +186,7 @@ export default class HorizontalSpin extends Component {
     animations.push(
       Animated.timing(this.posAnimatedXYValues[index], {
         toValue: { x: toXValue, y: 0 },
-        duration: MAX_ANIMATION_DURATION,
+        duration: this.animationDuration,
         useNativeDriver: true
       })
     );
@@ -207,8 +209,8 @@ export default class HorizontalSpin extends Component {
   }
 
   _slideToRight() {
-    if (this.isAnimationStop()) {
-      this.resetAnimationState();
+    if (this.isStopped()) {
+      this.idle();
       return;
     }
     const arrayAnimation = [];
@@ -227,8 +229,8 @@ export default class HorizontalSpin extends Component {
   }
 
   _slideToLeft() {
-    if (this.isAnimationStop()) {
-      this.resetAnimationState();
+    if (this.isStopped()) {
+      this.idle();
       return;
     }
     const arrayAnimation = [];
@@ -269,34 +271,58 @@ export default class HorizontalSpin extends Component {
     return ballArrayLayouts;
   };
 
+  running() {
+    this.animationState = BallScrollState.RUNNING;
+  }
+
   stop() {
     this.animationState = BallScrollState.STOP;
   }
 
-  isAnimationRunning = () => this.animationState === BallScrollState.RUNNING;
-
-  isAnimationStop = () => this.animationState === BallScrollState.STOP;
-
-  resetAnimationState() {
+  idle() {
     this.animationState = BallScrollState.IDLE;
   }
 
+  isRunning = () => this.animationState === BallScrollState.RUNNING;
+
+  isStopped = () => this.animationState === BallScrollState.STOP;
+
   startSlideToRight() {
-    if (this.isAnimationRunning()) {
+    if (this.isRunning()) {
       return;
     }
+    this.running();
     this._slideToRight();
   }
 
   startSlideToLeft() {
-    if (this.isAnimationRunning()) {
+    if (this.isRunning()) {
       return;
     }
+    this.running();
     this._slideToLeft();
   }
 
+  onSwipe = (state, gestureState) => {
+    const { vx } = gestureState;
+    const steps = Math.abs(vx) * 10 * this.animationDuration;
+    setTimeout(() => this.stop(), steps);
+  };
+
   render() {
-    return <View style={styles.container}>{this._renderBalls()}</View>;
+    const config = {
+      velocityThreshold: 0.3,
+      directionalOffsetThreshold: 80
+    };
+    return (
+      <GestureRecognizer
+        config={config}
+        onSwipe={this.onSwipe}
+        style={styles.container}
+      >
+        {this._renderBalls()}
+      </GestureRecognizer>
+    );
   }
 }
 

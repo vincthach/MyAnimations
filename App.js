@@ -17,21 +17,16 @@ import {
   PanResponder
 } from "react-native";
 import HorizontalSpin from "./HorizontalSpin";
-
 export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <HorizontalSpin ref="horizontalSpin1" />
+        <HorizontalSpin ref="horizontal" />
         <Button
-          style={styles.row}
-          title="Left Animation"
-          onPress={() => this.refs["horizontalSpin1"].startSlideToRight()}
-        />
-
-        <Button
-          title="Stop Animation"
-          onPress={() => this.refs["horizontalSpin1"].stop()}
+          title="start"
+          onPress={() => {
+            this.refs["horizontal"].startSlideToRight();
+          }}
         />
       </View>
     );
@@ -41,7 +36,7 @@ export default class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 50,
+    marginTop: 150,
     backgroundColor: "#F5FCFF"
   },
   row: {
