@@ -8,7 +8,7 @@
 import React, { Component, PureComponent } from "react";
 import { Animated, TouchableOpacity } from "react-native";
 
-export default class BallItemLayout extends Component {
+export default class BallItemLayout extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -30,13 +30,11 @@ export default class BallItemLayout extends Component {
     const { panHandlers, ballStyle, textStyle } = this.props;
     const { textValue } = this.state;
     return (
-      <TouchableOpacity
-        {...panHandlers}
-        style={ballStyle}
-        onPress={this.onClick}
-      >
-        <Animated.Text style={textStyle}>{textValue}</Animated.Text>
-      </TouchableOpacity>
+      <Animated.View {...panHandlers} style={ballStyle}>
+        <TouchableOpacity style={ballStyle[0]} onPress={this.onClick}>
+          <Animated.Text style={textStyle}>{textValue}</Animated.Text>
+        </TouchableOpacity>
+      </Animated.View>
     );
   }
 }

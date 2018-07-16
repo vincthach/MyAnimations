@@ -103,6 +103,11 @@ export default class HorizontalSpin extends Component {
 
   setUpBallsAnimation() {
     forEachBallIndex(index => this.setUpBallAnimation(index));
+    this.boldTextAnimationValues[4].setValue(1);
+    this.boldTextAnimationValues[3].setValue(0.5);
+    this.boldTextAnimationValues[5].setValue(0.5);
+    this.boldTextAnimationValues[3].setValue(0.25);
+    this.boldTextAnimationValues[6].setValue(0.25);
   }
 
   componentWillMount() {
@@ -123,16 +128,34 @@ export default class HorizontalSpin extends Component {
         animations.push(
           Animated.timing(this.boldTextAnimationValues[index], {
             duration: this.animationDuration,
-            toValue: 1,
-            useNativeDriver: true
+            toValue: 1
+          })
+        );
+      } else if (
+        currentPos === BallPositions.POS_3 ||
+        currentPos === BallPositions.POS_5
+      ) {
+        animations.push(
+          Animated.timing(this.boldTextAnimationValues[index], {
+            duration: this.animationDuration,
+            toValue: 0.5
+          })
+        );
+      } else if (
+        currentPos === BallPositions.POS_2 ||
+        currentPos === BallPositions.POS_6
+      ) {
+        animations.push(
+          Animated.timing(this.boldTextAnimationValues[index], {
+            duration: this.animationDuration,
+            toValue: 0.25
           })
         );
       } else {
         animations.push(
           Animated.timing(this.boldTextAnimationValues[index], {
             duration: this.animationDuration,
-            toValue: 0,
-            useNativeDriver: true
+            toValue: 0
           })
         );
       }
@@ -149,8 +172,7 @@ export default class HorizontalSpin extends Component {
     animations.push(
       Animated.timing(this.posAnimatedXYValues[index], {
         toValue: { x: toXValue, y: 0 },
-        duration: this.animationDuration,
-        useNativeDriver: true
+        duration: this.animationDuration
       })
     );
 
@@ -169,16 +191,34 @@ export default class HorizontalSpin extends Component {
         animations.push(
           Animated.timing(this.boldTextAnimationValues[index], {
             duration: this.animationDuration,
-            toValue: 1,
-            useNativeDriver: true
+            toValue: 1
+          })
+        );
+      } else if (
+        currentPos === BallPositions.POS_7 ||
+        currentPos === BallPositions.POS_5
+      ) {
+        animations.push(
+          Animated.timing(this.boldTextAnimationValues[index], {
+            duration: this.animationDuration,
+            toValue: 0.5
+          })
+        );
+      } else if (
+        currentPos === BallPositions.POS_8 ||
+        currentPos === BallPositions.POS_4
+      ) {
+        animations.push(
+          Animated.timing(this.boldTextAnimationValues[index], {
+            duration: this.animationDuration,
+            toValue: 0.25
           })
         );
       } else {
         animations.push(
           Animated.timing(this.boldTextAnimationValues[index], {
             duration: this.animationDuration,
-            toValue: 0,
-            useNativeDriver: true
+            toValue: 0
           })
         );
       }
@@ -196,8 +236,7 @@ export default class HorizontalSpin extends Component {
     animations.push(
       Animated.timing(this.posAnimatedXYValues[index], {
         toValue: { x: toXValue, y: 0 },
-        duration: this.animationDuration,
-        useNativeDriver: true
+        duration: this.animationDuration
       })
     );
 
@@ -229,8 +268,8 @@ export default class HorizontalSpin extends Component {
     });
 
     Animated.parallel(arrayAnimation, {
-      stopTogether: true,
-      useNativeDriver: true
+      stopTogether: true
+      //useNativeDriver: true
     }).start(callback => {
       this.itemAnimationLeft = this.itemAnimationLeft - 1;
       this._updateBallRight();
@@ -249,8 +288,8 @@ export default class HorizontalSpin extends Component {
     });
 
     Animated.parallel(arrayAnimation, {
-      stopTogether: true,
-      useNativeDriver: true
+      stopTogether: true
+      // useNativeDriver: true
     }).start(() => {
       this.itemAnimationLeft = this.itemAnimationLeft - 1;
       this._updateBallLeft();
