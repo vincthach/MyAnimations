@@ -31,7 +31,7 @@ import {
   getNextNumber,
   BallScrollState
 } from "./Config";
-import GestureRecognizer from "./GestureRecognizer";
+import GestureRecognizer, { swipeDirections } from "./GestureRecognizer";
 import BallItemLayout from "./BallItemLayout";
 
 export default class HorizontalSpin extends Component {
@@ -53,11 +53,14 @@ export default class HorizontalSpin extends Component {
     this.ballRefs = createArray();
     // Hold index left, and right position when scroll
     this.ballLeftIndex = 0;
-    this.ballRightIndex = 0;
+    this.ballRightIndex = 8;
+    this.ballCenterIndex = 4;
 
     this.animationState = BallScrollState.IDLE;
 
     this.enableScaleAnimation = true;
+
+    this.itemAnimationLeft = 0;
   }
 
   setUpBallAnimation = index => {
@@ -228,6 +231,7 @@ export default class HorizontalSpin extends Component {
       stopTogether: true,
       useNativeDriver: true
     }).start(callback => {
+      this.itemAnimationLeft = this.itemAnimationLeft - 1;
       this._updateBallRight();
       this._slideToRight();
     });
@@ -247,10 +251,24 @@ export default class HorizontalSpin extends Component {
       stopTogether: true,
       useNativeDriver: true
     }).start(() => {
+      this.itemAnimationLeft = this.itemAnimationLeft - 1;
       this._updateBallLeft();
       this._slideToLeft();
     });
   }
+
+  _onBallClick = index => {
+    const currentPosiion = this.posXYList[index].x;
+    this.animationDuration = MAX_ANIMATION_DURATION / 2;
+    const itemLeft = parseInt(currentPosiion / ITEM_HEIGHT);
+    if (itemLeft > 3) {
+      this.itemAnimationLeft = itemLeft - 3;
+      this.startSlideToLeft();
+    } else if (itemLeft < 3) {
+      this.itemAnimationLeft = 3 - itemLeft;
+      this.startSlideToRight();
+    }
+  };
 
   _renderBalls = () => {
     var ballArrayLayouts = [];
@@ -259,6 +277,7 @@ export default class HorizontalSpin extends Component {
         <BallItemLayout
           key={index}
           ref={ref => (this.ballRefs[index] = ref)}
+          onClick={this._onBallClick}
           panHandler={this.panResponders[index].panHandlers}
           ballStyle={[
             styles.square,
@@ -269,6 +288,7 @@ export default class HorizontalSpin extends Component {
           ]}
           textStyle={{ transform: [{ scale: this.boldTextAnimations[index] }] }}
           textValue={this.arrayBallNumber[index]}
+          textIndex={index}
         />
       );
     });
@@ -289,7 +309,8 @@ export default class HorizontalSpin extends Component {
 
   isRunning = () => this.animationState === BallScrollState.RUNNING;
 
-  isStopped = () => this.animationState === BallScrollState.STOP;
+  isStopped = () =>
+    this.animationState === BallScrollState.STOP || this.itemAnimationLeft <= 0;
 
   startSlideToRight() {
     if (this.isRunning()) {
@@ -309,12 +330,23 @@ export default class HorizontalSpin extends Component {
 
   onSwipe = (state, gestureState) => {
     const { vx } = gestureState;
-    let newVX = Math.round(Math.abs(vx));
-    this.startSlideToRight();
-    setTimeout(
-      () => this.stop(),
-      parseInt(this.animationDuration * MAX_BALL_VISIBLE * newVX)
-    );
+    const newVX = Math.abs(vx);
+    if (newVX <= 0.5) {
+    } else if (newVX <= 1) {
+      this.animationDuration = MAX_ANIMATION_DURATION / 2;
+      this.itemAnimationLeft = MAX_BALL_VISIBLE / 2;
+    } else if (newVX <= 2) {
+      this.animationDuration = MAX_ANIMATION_DURATION / 4;
+      this.itemAnimationLeft = MAX_BALL_VISIBLE;
+    } else {
+      this.animationDuration = MAX_ANIMATION_DURATION / 4;
+      this.itemAnimationLeft = MAX_BALL_VISIBLE * 3;
+    }
+    if (state === swipeDirections.SWIPE_LEFT) {
+      this.startSlideToLeft();
+    } else {
+      this.startSlideToRight();
+    }
   };
 
   render() {

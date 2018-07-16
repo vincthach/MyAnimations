@@ -14,7 +14,7 @@ const MAX_BALL_VISIBLE = 7;
 const ITEM_HEIGHT = parseInt(windowWidth / MAX_BALL_VISIBLE);
 
 // Duration for 1 step
-const MAX_ANIMATION_DURATION = 700;
+const MAX_ANIMATION_DURATION = 300;
 const MIN_ANIMATION_DURATION = 100;
 
 const createArray = (arrLength = MAX_BALL) => {

@@ -6,7 +6,7 @@
  * @flow
  */
 import React, { Component, PureComponent } from "react";
-import { Animated } from "react-native";
+import { Animated, TouchableOpacity } from "react-native";
 
 export default class BallItemLayout extends Component {
   constructor(props) {
@@ -22,13 +22,21 @@ export default class BallItemLayout extends Component {
     this.setState({ textValue: newValue });
   };
 
+  onClick = () => {
+    this.props.onClick(this.props.textIndex);
+  };
+
   render() {
     const { panHandlers, ballStyle, textStyle } = this.props;
     const { textValue } = this.state;
     return (
-      <Animated.View {...panHandlers} style={ballStyle}>
+      <TouchableOpacity
+        {...panHandlers}
+        style={ballStyle}
+        onPress={this.onClick}
+      >
         <Animated.Text style={textStyle}>{textValue}</Animated.Text>
-      </Animated.View>
+      </TouchableOpacity>
     );
   }
 }
