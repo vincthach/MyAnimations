@@ -21,13 +21,7 @@ export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <HorizontalSpin ref="horizontal" />
-        <Button
-          title="start"
-          onPress={() => {
-            this.refs["horizontal"].startSlideToRight();
-          }}
-        />
+        <HorizontalSpin />
       </View>
     );
   }

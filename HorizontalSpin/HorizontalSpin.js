@@ -37,7 +37,7 @@ import BallItemLayout from "./BallItemLayout";
 export default class HorizontalSpin extends Component {
   constructor(props) {
     super(props);
-    this.animationDuration = 100;
+    this.animationDuration = MAX_ANIMATION_DURATION;
     // List panresponder
     this.panResponders = createArray();
     // List Animated XY
@@ -56,6 +56,8 @@ export default class HorizontalSpin extends Component {
     this.ballRightIndex = 0;
 
     this.animationState = BallScrollState.IDLE;
+
+    this.enableScaleAnimation = true;
   }
 
   setUpBallAnimation = index => {
@@ -112,22 +114,25 @@ export default class HorizontalSpin extends Component {
     if (currentPos === BallPositions.POS_1) {
       this.ballLeftIndex = index;
     }
-    if (currentPos === BallPositions.POS_4) {
-      animations.push(
-        Animated.timing(this.boldTextAnimationValues[index], {
-          duration: this.animationDuration,
-          toValue: 1,
-          useNativeDriver: true
-        })
-      );
-    } else {
-      animations.push(
-        Animated.timing(this.boldTextAnimationValues[index], {
-          duration: this.animationDuration,
-          toValue: 0,
-          useNativeDriver: true
-        })
-      );
+
+    if (this.enableScaleAnimation) {
+      if (currentPos === BallPositions.POS_4) {
+        animations.push(
+          Animated.timing(this.boldTextAnimationValues[index], {
+            duration: this.animationDuration / 2,
+            toValue: 1,
+            useNativeDriver: true
+          })
+        );
+      } else {
+        animations.push(
+          Animated.timing(this.boldTextAnimationValues[index], {
+            duration: this.animationDuration / 2,
+            toValue: 0,
+            useNativeDriver: true
+          })
+        );
+      }
     }
 
     if (currentPos === BallPositions.POS_9) {
@@ -156,24 +161,25 @@ export default class HorizontalSpin extends Component {
     if (currentPos === BallPositions.POS_9) {
       this.ballRightIndex = index;
     }
-    if (currentPos === BallPositions.POS_6) {
-      animations.push(
-        Animated.timing(this.boldTextAnimationValues[index], {
-          duration: this.animationDuration,
-          toValue: 1,
-          useNativeDriver: true
-        })
-      );
-    } else {
-      animations.push(
-        Animated.timing(this.boldTextAnimationValues[index], {
-          duration: this.animationDuration,
-          toValue: 0,
-          useNativeDriver: true
-        })
-      );
+    if (this.enableScaleAnimation) {
+      if (currentPos === BallPositions.POS_6) {
+        animations.push(
+          Animated.timing(this.boldTextAnimationValues[index], {
+            duration: this.animationDuration / 2,
+            toValue: 1,
+            useNativeDriver: true
+          })
+        );
+      } else {
+        animations.push(
+          Animated.timing(this.boldTextAnimationValues[index], {
+            duration: this.animationDuration / 2,
+            toValue: 0,
+            useNativeDriver: true
+          })
+        );
+      }
     }
-
     if (currentPos === BallPositions.POS_1) {
       toXValue = BallPositions.POS_9;
       this.posAnimatedXYValues[index].setValue({
@@ -218,11 +224,10 @@ export default class HorizontalSpin extends Component {
       arrayAnimation.push(this._createSlideToRightAnimation(index));
     });
 
-    this.currentAnimation = Animated.parallel(arrayAnimation, {
+    Animated.parallel(arrayAnimation, {
       stopTogether: true,
       useNativeDriver: true
-    });
-    this.currentAnimation.start(callback => {
+    }).start(callback => {
       this._updateBallRight();
       this._slideToRight();
     });
@@ -238,11 +243,10 @@ export default class HorizontalSpin extends Component {
       arrayAnimation.push(this._createSlideToLeftAnimation(index));
     });
 
-    this.currentAnimation = Animated.parallel(arrayAnimation, {
+    Animated.parallel(arrayAnimation, {
       stopTogether: true,
       useNativeDriver: true
-    });
-    this.currentAnimation.start(() => {
+    }).start(() => {
       this._updateBallLeft();
       this._slideToLeft();
     });
@@ -305,8 +309,12 @@ export default class HorizontalSpin extends Component {
 
   onSwipe = (state, gestureState) => {
     const { vx } = gestureState;
-    const steps = Math.abs(vx) * 10 * this.animationDuration;
-    setTimeout(() => this.stop(), steps);
+    let newVX = Math.round(Math.abs(vx));
+    this.startSlideToRight();
+    setTimeout(
+      () => this.stop(),
+      parseInt(this.animationDuration * MAX_BALL_VISIBLE * newVX)
+    );
   };
 
   render() {
