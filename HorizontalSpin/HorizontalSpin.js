@@ -326,7 +326,10 @@ export default class HorizontalSpin extends Component {
               transform: this.posAnimatedXYValues[index].getTranslateTransform()
             }
           ]}
-          textStyle={{ transform: [{ scale: this.boldTextAnimations[index] }] }}
+          textStyle={{
+            fontWeight: "600",
+            transform: [{ scale: this.boldTextAnimations[index] }]
+          }}
           textValue={this.arrayBallNumber[index]}
           textIndex={index}
         />

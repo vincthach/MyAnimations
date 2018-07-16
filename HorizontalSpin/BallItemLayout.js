@@ -6,7 +6,7 @@
  * @flow
  */
 import React, { Component, PureComponent } from "react";
-import { Animated, TouchableOpacity } from "react-native";
+import { Animated, TouchableWithoutFeedback } from "react-native";
 
 export default class BallItemLayout extends PureComponent {
   constructor(props) {
@@ -31,9 +31,9 @@ export default class BallItemLayout extends PureComponent {
     const { textValue } = this.state;
     return (
       <Animated.View {...panHandlers} style={ballStyle}>
-        <TouchableOpacity style={ballStyle[0]} onPress={this.onClick}>
+        <TouchableWithoutFeedback style={ballStyle[0]} onPress={this.onClick}>
           <Animated.Text style={textStyle}>{textValue}</Animated.Text>
-        </TouchableOpacity>
+        </TouchableWithoutFeedback>
       </Animated.View>
     );
   }
