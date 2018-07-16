@@ -268,8 +268,8 @@ export default class HorizontalSpin extends Component {
     });
 
     Animated.parallel(arrayAnimation, {
-      stopTogether: true
-      //useNativeDriver: true
+      stopTogether: true,
+      useNativeDriver: true
     }).start(callback => {
       this.itemAnimationLeft = this.itemAnimationLeft - 1;
       this._updateBallRight();
@@ -288,8 +288,8 @@ export default class HorizontalSpin extends Component {
     });
 
     Animated.parallel(arrayAnimation, {
-      stopTogether: true
-      // useNativeDriver: true
+      stopTogether: true,
+      useNativeDriver: true
     }).start(() => {
       this.itemAnimationLeft = this.itemAnimationLeft - 1;
       this._updateBallLeft();
@@ -326,7 +326,10 @@ export default class HorizontalSpin extends Component {
               transform: this.posAnimatedXYValues[index].getTranslateTransform()
             }
           ]}
-          textStyle={{ transform: [{ scale: this.boldTextAnimations[index] }] }}
+          textStyle={{
+            fontWeight: "600",
+            transform: [{ scale: this.boldTextAnimations[index] }]
+          }}
           textValue={this.arrayBallNumber[index]}
           textIndex={index}
         />
