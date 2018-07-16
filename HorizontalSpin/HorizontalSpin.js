@@ -96,8 +96,8 @@ export default class HorizontalSpin extends Component {
     this.boldTextAnimations[index] = this.boldTextAnimationValues[
       index
     ].interpolate({
-      inputRange: [0, 0.5, 1],
-      outputRange: [1, 1.5, 2]
+      inputRange: [0, 1],
+      outputRange: [1, 2]
     });
   };
 
@@ -122,7 +122,7 @@ export default class HorizontalSpin extends Component {
       if (currentPos === BallPositions.POS_4) {
         animations.push(
           Animated.timing(this.boldTextAnimationValues[index], {
-            duration: this.animationDuration / 2,
+            duration: this.animationDuration,
             toValue: 1,
             useNativeDriver: true
           })
@@ -130,7 +130,7 @@ export default class HorizontalSpin extends Component {
       } else {
         animations.push(
           Animated.timing(this.boldTextAnimationValues[index], {
-            duration: this.animationDuration / 2,
+            duration: this.animationDuration,
             toValue: 0,
             useNativeDriver: true
           })
@@ -168,7 +168,7 @@ export default class HorizontalSpin extends Component {
       if (currentPos === BallPositions.POS_6) {
         animations.push(
           Animated.timing(this.boldTextAnimationValues[index], {
-            duration: this.animationDuration / 2,
+            duration: this.animationDuration,
             toValue: 1,
             useNativeDriver: true
           })
@@ -176,13 +176,14 @@ export default class HorizontalSpin extends Component {
       } else {
         animations.push(
           Animated.timing(this.boldTextAnimationValues[index], {
-            duration: this.animationDuration / 2,
+            duration: this.animationDuration,
             toValue: 0,
             useNativeDriver: true
           })
         );
       }
     }
+
     if (currentPos === BallPositions.POS_1) {
       toXValue = BallPositions.POS_9;
       this.posAnimatedXYValues[index].setValue({
@@ -259,7 +260,7 @@ export default class HorizontalSpin extends Component {
 
   _onBallClick = index => {
     const currentPosiion = this.posXYList[index].x;
-    this.animationDuration = MAX_ANIMATION_DURATION / 2;
+    this.animationDuration = MAX_ANIMATION_DURATION;
     const itemLeft = parseInt(currentPosiion / ITEM_HEIGHT);
     if (itemLeft > 3) {
       this.itemAnimationLeft = itemLeft - 3;
