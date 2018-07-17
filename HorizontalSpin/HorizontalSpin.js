@@ -327,6 +327,7 @@ export default class HorizontalSpin extends Component {
             }
           ]}
           textStyle={{
+            color: "black",
             fontWeight: "600",
             transform: [{ scale: this.boldTextAnimations[index] }]
           }}
@@ -375,6 +376,8 @@ export default class HorizontalSpin extends Component {
     const { vx } = gestureState;
     const newVX = Math.abs(vx);
     if (newVX <= 0.5) {
+      this.animationDuration = MAX_ANIMATION_DURATION / 2;
+      this.itemAnimationLeft = 2;
     } else if (newVX <= 1) {
       this.animationDuration = MAX_ANIMATION_DURATION / 2;
       this.itemAnimationLeft = MAX_BALL_VISIBLE / 2;
@@ -392,6 +395,37 @@ export default class HorizontalSpin extends Component {
     }
   };
 
+  onClick = (state, gestureState) => {
+    const { x0 } = gestureState;
+
+    if (x0 < BallPositions.POS_3) {
+      this.itemAnimationLeft = 3;
+      this.animationDuration = MAX_ANIMATION_DURATION / 3;
+      this.startSlideToRight();
+    } else if (x0 < BallPositions.POS_4) {
+      this.itemAnimationLeft = 2;
+      this.animationDuration = MAX_ANIMATION_DURATION / 2;
+      this.startSlideToRight();
+    } else if (x0 < BallPositions.POS_5) {
+      this.animationDuration = MAX_ANIMATION_DURATION;
+      this.itemAnimationLeft = 1;
+      this.startSlideToRight();
+    } else if (x0 < BallPositions.POS_6) {
+    } else if (x0 < BallPositions.POS_7) {
+      this.itemAnimationLeft = 1;
+      this.animationDuration = MAX_ANIMATION_DURATION;
+      this.startSlideToLeft();
+    } else if (x0 < BallPositions.POS_8) {
+      this.itemAnimationLeft = 2;
+      this.animationDuration = MAX_ANIMATION_DURATION / 2;
+      this.startSlideToLeft();
+    } else if (x0 < BallPositions.POS_9) {
+      this.itemAnimationLeft = 3;
+      this.animationDuration = MAX_ANIMATION_DURATION / 3;
+      this.startSlideToLeft();
+    }
+  };
+
   render() {
     const config = {
       velocityThreshold: 0.3,
@@ -401,6 +435,7 @@ export default class HorizontalSpin extends Component {
       <GestureRecognizer
         config={config}
         onSwipe={this.onSwipe}
+        onClick={this.onClick}
         style={styles.container}
       >
         {this._renderBalls()}

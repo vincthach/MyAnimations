@@ -48,10 +48,7 @@ class GestureRecognizer extends Component {
   }
 
   _handleShouldSetPanResponder(evt, gestureState) {
-    return (
-      evt.nativeEvent.touches.length === 1 &&
-      !this._gestureIsClick(gestureState)
-    );
+    return evt.nativeEvent.touches.length === 1;
   }
 
   _gestureIsClick(gestureState) {
@@ -69,10 +66,15 @@ class GestureRecognizer extends Component {
       onSwipeUp,
       onSwipeDown,
       onSwipeLeft,
-      onSwipeRight
+      onSwipeRight,
+      onClick
     } = this.props;
     const { SWIPE_LEFT, SWIPE_RIGHT, SWIPE_UP, SWIPE_DOWN } = swipeDirections;
-    onSwipe && onSwipe(swipeDirection, gestureState);
+    if (swipeDirection) {
+      onSwipe && onSwipe(swipeDirection, gestureState);
+    } else {
+      onClick && onClick(swipeDirection, gestureState);
+    }
   }
 
   _getSwipeDirection(gestureState) {
