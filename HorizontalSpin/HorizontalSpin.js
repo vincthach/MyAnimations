@@ -97,17 +97,17 @@ export default class HorizontalSpin extends Component {
       index
     ].interpolate({
       inputRange: [0, 1],
-      outputRange: [1, 2]
+      outputRange: [0.5, 1]
     });
   };
 
   setUpBallsAnimation() {
     forEachBallIndex(index => this.setUpBallAnimation(index));
     this.boldTextAnimationValues[4].setValue(1);
+    this.boldTextAnimationValues[3].setValue(0.75);
+    this.boldTextAnimationValues[5].setValue(0.75);
     this.boldTextAnimationValues[3].setValue(0.5);
-    this.boldTextAnimationValues[5].setValue(0.5);
-    this.boldTextAnimationValues[3].setValue(0.25);
-    this.boldTextAnimationValues[6].setValue(0.25);
+    this.boldTextAnimationValues[6].setValue(0.5);
   }
 
   componentWillMount() {
@@ -138,7 +138,7 @@ export default class HorizontalSpin extends Component {
         animations.push(
           Animated.timing(this.boldTextAnimationValues[index], {
             duration: this.animationDuration,
-            toValue: 0.5
+            toValue: 0.75
           })
         );
       } else if (
@@ -148,7 +148,7 @@ export default class HorizontalSpin extends Component {
         animations.push(
           Animated.timing(this.boldTextAnimationValues[index], {
             duration: this.animationDuration,
-            toValue: 0.25
+            toValue: 0.5
           })
         );
       } else {
@@ -201,7 +201,7 @@ export default class HorizontalSpin extends Component {
         animations.push(
           Animated.timing(this.boldTextAnimationValues[index], {
             duration: this.animationDuration,
-            toValue: 0.5
+            toValue: 0.75
           })
         );
       } else if (
@@ -211,7 +211,7 @@ export default class HorizontalSpin extends Component {
         animations.push(
           Animated.timing(this.boldTextAnimationValues[index], {
             duration: this.animationDuration,
-            toValue: 0.25
+            toValue: 0.5
           })
         );
       } else {
@@ -328,6 +328,7 @@ export default class HorizontalSpin extends Component {
           ]}
           textStyle={{
             color: "black",
+            fontSize: 30,
             fontWeight: "600",
             transform: [{ scale: this.boldTextAnimations[index] }]
           }}
